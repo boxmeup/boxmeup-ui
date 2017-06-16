@@ -3,6 +3,8 @@
 This projcet houses the UI source for the new Boxmeup Go-lang implementation. The goal of this project is to create a single-page app that is
 mobile and offline (sortof) friendly that operates on the new Boxmeup Go server API.
 
+![Screenshot](docs/screenshot.png)
+
 ## Setup
 
 ```bash
