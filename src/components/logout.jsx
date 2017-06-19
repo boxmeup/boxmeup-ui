@@ -3,7 +3,7 @@ import { Component } from 'react';
 class Logout extends Component {
 
 	componentWillMount() {
-		localStorage.removeItem('auth_token');
+		this.props.auth.deauthenticate();
 		this.props.history.replace('/');
 	}
 

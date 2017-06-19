@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import './login.css';
+import logo from '../logo-icon.png';
 
 class LoginPage extends Component {
 
 	constructor(props) {
 		super(props);
-
+		this.auth = props.auth;
+		this.processForm = this.processForm.bind(this);
 		this.state = {
-			error: '',
+			error: this.props.location.state.error || '',
 			token: localStorage.getItem('auth_token') || ''
 		};
 	}
 
 	componentWillMount() {
-		if (this.state.token) {
+		if (this.auth.isAuthenticated()) {
 			this.props.history.replace("/");
 		}
 	}
@@ -23,19 +27,8 @@ class LoginPage extends Component {
 			error: ''
 		});
 		try {
-			const response = await fetch('/api/user/login', {
-				method: 'POST',
-				body: new FormData(e.target)
-			});
-			if (response.status === 500) {
-				throw new Error('Unable to login at this time.');
-			}
-			const body = await response.json();
-			if (!response.ok) {
-				throw new Error(body.text);
-			}
-			localStorage.setItem('auth_token', body.token);
-			this.props.history.push("/");
+			await this.auth.authenticate(e.target);
+			this.props.history.push(this.props.location.state.from.pathname || '/');
 		} catch (e) {
 			this.setState({
 				error: e.message
@@ -45,18 +38,28 @@ class LoginPage extends Component {
 
 	render() {
 		return (
-			<div className="container">
-				<form
-					action="/login"
-					onSubmit={this.processForm.bind(this)}>
-					<div style={{maxWidth: 330 + 'px', margin: '0 auto'}}>
-						<h2 className="mb-2">Log In</h2>
-						{this.state.error && <div className="alert alert-danger" role="alert">{this.state.error}</div>}
-						<input type="email" name="email" className="form-control mb-2" placeholder="email address" required autoFocus/>
-						<input type="password" name="password" className="form-control mb-2" placeholder="password" required/>
-						<button type="submit" className="btn btn-primary btn-block rounded-bottom">Login</button>
+			<div className="Login container">
+				<div className="row">
+					<div className="Login-container col-md-4 offset-md-6">
+						<div className="Login-header">
+							<img src={logo} alt=""/>
+							<h2 className="align-top">Boxmeup</h2>
+						</div>
+						<form
+							action="/login"
+							onSubmit={this.processForm}>
+							{this.state.error && <div className="alert alert-danger" role="alert">{this.state.error}</div>}
+							<input type="email" name="email" className="form-control mb-2" placeholder="email address" required autoFocus/>
+							<input type="password" name="password" className="form-control mb-2" placeholder="password" required/>
+							<button type="submit" className="btn btn-primary btn-block mb-2">Login</button>
+							<Link to="/forgot_password">Forgot your password?</Link>
+						</form>
+						<div className="Login-footer">
+							<span>Don't have an account.</span>&nbsp;
+							<Link to="/signup">Create one!</Link>
+						</div>
 					</div>
-				</form>
+				</div>
 			</div>
 		)
 	}

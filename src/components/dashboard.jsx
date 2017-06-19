@@ -1,7 +1,6 @@
-import React from 'react';
-import AuthorizedPage from '../AuthorizedPage.js';
+import React, { Component } from 'react';
 
-export default class Dashboard extends AuthorizedPage {
+export default class Dashboard extends Component {
 	render() {
 		return <div className="container">Dashboard</div>
 	}

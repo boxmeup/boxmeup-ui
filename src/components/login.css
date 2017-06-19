@@ -1,0 +1,24 @@
+.Login-container {
+	margin: 3em auto;
+}
+
+.Login-header {
+	text-align: center;
+	padding: 0.5em;
+	margin-bottom: 1em;
+}
+
+.Login-header h2 {
+	display: inline;
+	margin-left: 0.5em;
+}
+
+.Login-container form {
+	padding: 3em;
+	border: 1px solid #ddd;
+}
+
+.Login-footer {
+	text-align: center;
+	margin-top: 1em;
+}
