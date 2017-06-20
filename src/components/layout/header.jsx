@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  ButtonDropdown,
   Collapse,
   Navbar,
   NavbarToggler,
@@ -10,7 +9,8 @@ import {
   NavLink,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
+  UncontrolledButtonDropdown
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
@@ -24,22 +24,14 @@ export default class Header extends Component {
 
     this.auth = props.auth;
     this.toggle = this.toggle.bind(this);
-    this.toggleDropdown = this.toggleDropdown.bind(this);
     this.state = {
-      isOpen: false,
-      dropdownOpen: false
+      isOpen: false
     };
   }
 
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen
-    });
-  }
-
-  toggleDropdown() {
-    this.setState({
-      dropdownOpen: !this.state.dropdownOpen
     });
   }
 
@@ -69,7 +61,7 @@ export default class Header extends Component {
               <form className="form-inline my-2 my-lg-0">
                 <input className="form-control mr-sm-2" type="text" placeholder="Search"/>
               </form>
-              <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown} tether>
+              <UncontrolledButtonDropdown tether>
                 <DropdownToggle caret color="primary">
                   Account
                 </DropdownToggle>
@@ -79,7 +71,7 @@ export default class Header extends Component {
                   <DropdownItem divider />
                   <DropdownItem tag={Link} to="/logout">Logout</DropdownItem>
                 </DropdownMenu>
-              </ButtonDropdown>
+              </UncontrolledButtonDropdown>
             </Collapse>
           </Navbar>
         </div>

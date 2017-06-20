@@ -1,33 +1,23 @@
 import React, { Component } from 'react';
 import AuthError from '../errors/AuthError.js';
-import { Redirect, Link } from 'react-router-dom'
-import {
-	Alert,
-	Button,
-	ButtonGroup,
-	Card,
-	CardBlock,
-	CardSubtitle,
-	CardText,
-	DropdownMenu,
-	DropdownItem,
-	DropdownToggle,
-	Input,
-	Label,
-	Progress,
-	Table,
-	UncontrolledDropdown
-} from 'reactstrap';
-import moment from 'moment';
+import { Redirect } from 'react-router-dom'
+import { Alert } from 'reactstrap';
+
+import Panel from './containers/Panel.jsx';
+import LocationFilter from './containers/LocationFilter.jsx';
+import ContainerList from './containers/ContainerList.jsx';
 
 export default class Containers extends Component {
 	constructor(props) {
 		super(props);
+		this.onContainerSelected = this.onContainerSelected.bind(this);
 		const lastResponse = JSON.parse(localStorage.getItem('lastContainerResponse'));
 		this.state = {
 			containers: lastResponse ? lastResponse.containers : [],
 			total: lastResponse ? lastResponse.meta.total : 0,
-			error: null
+			error: null,
+			errorType: null,
+			selectedContainers: new Set()
 		};
 	}
 
@@ -43,7 +33,8 @@ export default class Containers extends Component {
 			switch (e.constructor) {
 				case AuthError:
 					this.setState({
-						error: e.message
+						error: e.message,
+						errorType: e.constructor
 					});
 					break;
 				default:
@@ -52,36 +43,28 @@ export default class Containers extends Component {
 						'Unable to get up-to-date containers. Data may be stale.' :
 						'Unable to get containers.'
 					this.setState({
-						error: error
-					})
+						error: error,
+						errorType: e.constructor
+					});
 			}
 		}
 	}
 
+	onContainerSelected(selectedContainers) {
+		this.setState({
+			selectedContainers: selectedContainers
+		});
+	}
+
 	// @todo break this into multiple components
 	render() {
-		const containers = this.state.containers.map(container => {
-			return (
-				<tr key={container.id}>
-					<td><Label check><Input type="checkbox"/></Label></td>
-					<td className="text-center"><Link to={'/containers/' + container.id}>{container.name}</Link></td>
-					<td className="text-center hidden-sm-down">{container.container_item_count}</td>
-					<td className="text-center hidden-sm-down">{moment(container.modified).fromNow()}</td>
-					<td className="text-right">
-						<UncontrolledDropdown tether>
-							<DropdownToggle caret>
-								More
-							</DropdownToggle>
-							<DropdownMenu>
-								<DropdownItem>Delete Container</DropdownItem>
-							</DropdownMenu>
-						</UncontrolledDropdown>
-					</td>
-				</tr>
-			);
-		});
 		return (
-			this.props.auth.isAuthenticated() ? (
+			this.state.errorType === AuthError ? (
+				<Redirect to={{
+					pathname: '/login',
+					state: { from: this.props.location, error: this.state.error }
+				}}/>
+			) : (
 				<div className="container">
 					{this.state.error &&
 						<Alert color="danger">
@@ -89,61 +72,17 @@ export default class Containers extends Component {
 						</Alert>
 					}
 					<div className="row">
-						<div className="col-md-4 flex-md-last mb-2">
-							<Card className="mb-2">
-								<CardBlock>
-									<Progress color="primary" value={this.state.total}>{this.state.total}/100</Progress>
-									<CardText></CardText>
-									<ButtonGroup>
-										<Button color="success">Add Container</Button>
-										<Button color="primary">Bulk Print</Button>
-									</ButtonGroup>
-								</CardBlock>
-							</Card>
-							<Card>
-								<CardBlock>
-									<CardSubtitle className="mb-2">Locations</CardSubtitle>
-									<div className="form-check">
-										<Label check>
-											<Input type="checkbox" defaultChecked/>
-											&nbsp;Garage
-										</Label>
-									</div>
-									<div className="form-check">
-										<Label check>
-											<Input type="checkbox" defaultChecked/>
-											&nbsp;Attic
-										</Label>
-									</div>
-								</CardBlock>
-							</Card>
+						<div className="col-md-3 flex-md-last mb-2">
+							<Panel total={this.state.total} max={50} selectedContainers={this.state.selectedContainers}/>
+							<LocationFilter/>
 						</div>
 						<div className="col">
-							{containers.length === 0 && <span>loading...</span>}
-							<Table responsive bordered={false}>
-								<thead>
-									<tr>
-										<th></th>
-										<th className="text-center">Name</th>
-										<th className="text-center hidden-sm-down">Items</th>
-										<th className="text-center hidden-sm-down">Last Modified</th>
-										<th></th>
-									</tr>
-								</thead>
-								<tbody>
-									{containers}
-								</tbody>
-							</Table>
+							{this.state.containers.length === 0 && <span>loading...</span>}
+							<ContainerList containers={this.state.containers} onContainerSelected={this.onContainerSelected}/>
 						</div>
 					</div>
 				</div>
-			) : (
-				<Redirect to={{
-					pathname: '/login',
-					state: { from: this.props.location, error: this.state.error }
-				}}/>
 			)
-
 		);
 	}
 }
