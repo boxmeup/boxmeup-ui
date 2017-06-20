@@ -56,7 +56,6 @@ export default class Containers extends Component {
 		});
 	}
 
-	// @todo break this into multiple components
 	render() {
 		return (
 			this.state.errorType === AuthError ? (
