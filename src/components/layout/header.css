@@ -1,3 +1,7 @@
+.Header {
+    background-color: white;
+}
+
 .Header-nav {
     border-bottom: 1px solid #ddd;
     margin-bottom: 2em;

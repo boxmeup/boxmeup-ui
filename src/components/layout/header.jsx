@@ -15,6 +15,7 @@ import {
 import { Link } from 'react-router-dom';
 
 import './header.css';
+import '../../loader.css';
 import logo from '../../logo-icon.png';
 
 export default class Header extends Component {
@@ -40,29 +41,46 @@ export default class Header extends Component {
             !this.auth.isAuthenticated() ? (
                 null
             ) : (
-                <div className="container Header">
+                <div className="container Header sticky-top">
                     <Navbar light toggleable className="Header-nav pl-0 pr-0">
                         <NavbarToggler right onClick={this.toggle} />
                         <NavbarBrand tag={Link} to="/">
-                            <img src={logo} width="30" height="30" className="d-inline-block align-top mr-sm-2" alt="" />
+                            <img src={logo} width="30" height="30" className="d-inline-block align-top mr-2 " alt="" />
+                            <div className={"d-inline-block align-middle loading " + (this.props.appState.loading ? '' : 'loading-off')}></div>
                         </NavbarBrand>
-                        <Collapse isOpen={this.state.isOpen} navbar>
-                            <Nav className="mr-auto" navbar>
-                                <NavItem>
-                                    <NavLink tag={Link} to="/containers">Containers</NavLink>
-                                </NavItem>
-                                <NavItem>
-                                    <NavLink tag={Link} to="/items">Items</NavLink>
-                                </NavItem>
-                                <NavItem>
-                                    <NavLink tag={Link} to="/locations">Locations</NavLink>
-                                </NavItem>
-                            </Nav>
-                            <form className="form-inline my-2 my-lg-0">
+                        <Collapse isOpen={this.state.isOpen} delay={{hide: 100}} navbar>
+                            <form className="form-inline my-2 my-lg-0 hidden-sm-up">
                                 <input className="form-control mr-sm-2" type="text" placeholder="Search" />
                             </form>
-                            <UncontrolledButtonDropdown tether>
-                                <DropdownToggle caret color="primary">
+                            <Nav className="mr-auto" navbar>
+                                <NavItem>
+                                    <NavLink tag={Link} to="/containers" onClick={this.state.isOpen && this.toggle}>Containers</NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink tag={Link} to="/items" onClick={this.state.isOpen && this.toggle}>Items</NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink tag={Link} to="/locations" onClick={this.state.isOpen && this.toggle}>Locations</NavLink>
+                                </NavItem>
+                            </Nav>
+                            <form className="form-inline my-2 my-lg-0 hidden-sm-down">
+                                <input className="form-control mr-sm-2" type="text" placeholder="Search" />
+                            </form>
+                            <Nav className="mr-auto hidden-sm-up" navbar>
+                                <NavItem>
+                                    <NavLink tag={Link} to="/settings" onClick={this.state.isOpen && this.toggle}>Settings</NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink tag={Link} to="/applications" onClick={this.state.isOpen && this.toggle}>Applications</NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink tag={Link} to="/logout" onClick={this.state.isOpen && this.toggle}>Logout</NavLink>
+                                </NavItem>
+                            </Nav>
+                            <UncontrolledButtonDropdown className="hidden-sm-down" tether={{
+                                offset: '-8px 0'
+                            }}>
+                                <DropdownToggle caret color="primary" className="hidden-sm-down">
                                     Account
                                 </DropdownToggle>
                                 <DropdownMenu>
