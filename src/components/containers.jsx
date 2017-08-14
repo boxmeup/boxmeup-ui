@@ -13,20 +13,23 @@ export default class Containers extends Component {
         this.onContainerSelected = this.onContainerSelected.bind(this);
         const lastResponse = JSON.parse(localStorage.getItem('lastContainerResponse'));
         this.state = {
-            containers: lastResponse ? lastResponse.containers : [],
+            containers: lastResponse ? lastResponse.containers || [] : [],
             total: lastResponse ? lastResponse.meta.total : 0,
             error: null,
             errorType: null,
-            selectedContainers: new Set()
+            selectedContainers: new Set(),
+            isLoading: false
         };
     }
 
     async componentWillMount() {
         try {
-            const response = await this.props.auth.authorizedFetch('/api/container');
+            this.props.setAppState({loading: true});
+            const response = await this.props.auth.authorizedFetch('/api/container' + this.props.location.search);
             localStorage.setItem('lastContainerResponse', JSON.stringify(response));
             this.setState({
-                containers: response.containers,
+                // The server should respond with empty array instead of null
+                containers: response.containers || [],
                 total: response.meta.total
             });
         } catch (e) {
@@ -44,9 +47,12 @@ export default class Containers extends Component {
                         'Unable to get containers.'
                     this.setState({
                         error: error,
-                        errorType: e.constructor
+                        errorType: e.constructor,
+                        isLoading: false
                     });
             }
+        } finally {
+            this.props.setAppState({loading: false});
         }
     }
 
@@ -76,8 +82,9 @@ export default class Containers extends Component {
                                 <LocationFilter />
                             </div>
                             <div className="col">
-                                {this.state.containers.length === 0 && <span>loading...</span>}
-                                <ContainerList containers={this.state.containers} onContainerSelected={this.onContainerSelected} />
+                                {this.state.isLoading && <span>loading...</span>}
+                                {!this.state.isLoading && this.state.containers.length === 0 && <h4>No containers found.</h4>}
+                                {this.state.containers.length > 0 && <ContainerList containers={this.state.containers} onContainerSelected={this.onContainerSelected} />}
                             </div>
                         </div>
                     </div>
