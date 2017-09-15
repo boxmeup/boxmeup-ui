@@ -6,8 +6,8 @@ import { Alert } from 'reactstrap';
 import ContainerService from '../lib/containerservice.js';
 
 import Panel from './containers/Panel.jsx';
-import LocationFilter from './containers/LocationFilter.jsx';
 import ContainerList from './containers/ContainerList.jsx';
+import FloatingMenu from './layout/FloatingMenu.jsx';
 
 export default class Containers extends Component {
     constructor(props) {
@@ -15,13 +15,20 @@ export default class Containers extends Component {
         this.containers = new ContainerService(props.auth.authorizedFetch.bind(props.auth));
         this.onContainerSelected = this.onContainerSelected.bind(this);
         const lastResponse = JSON.parse(localStorage.getItem('lastContainerResponse'));
+        this.baseMenu = [{
+            icon: "plus",
+            link: "/containers/add",
+            color: "danger",
+            tooltip: "Add new container"
+        }];
         this.state = {
             containers: lastResponse ? lastResponse.containers || [] : [],
             total: lastResponse ? lastResponse.meta.total : 0,
             error: null,
             errorType: null,
             selectedContainers: new Set(),
-            isLoading: false
+            isLoading: false,
+            menu: this.baseMenu
         };
     }
 
@@ -61,7 +68,17 @@ export default class Containers extends Component {
 
     onContainerSelected(selectedContainers) {
         this.setState({
-            selectedContainers: selectedContainers
+            selectedContainers: selectedContainers,
+            menu: selectedContainers.size ?
+                this.baseMenu.concat([
+                    {
+                        icon: "print",
+                        link: "/containers/print",
+                        color: "primary",
+                        tooltip: "Bulk print"
+                    }
+                ]) :
+                this.baseMenu
         });
     }
 
@@ -73,7 +90,7 @@ export default class Containers extends Component {
                     state: { from: this.props.location, error: this.state.error }
                 }} />
             ) : (
-                    <div className="container">
+                    <div className="container" style={{marginBottom: '40px'}}>
                         {this.state.error &&
                             <Alert color="danger">
                                 <strong>Error!</strong> {this.state.error}
@@ -82,7 +99,7 @@ export default class Containers extends Component {
                         <div className="row">
                             <div className="col-md-3 flex-md-last mb-2">
                                 <Panel total={this.state.total} max={50} selectedContainers={this.state.selectedContainers} />
-                                <LocationFilter />
+
                             </div>
                             <div className="col">
                                 {this.state.isLoading && <span>loading...</span>}
@@ -90,6 +107,7 @@ export default class Containers extends Component {
                                 {this.state.containers.length > 0 && <ContainerList containers={this.state.containers} onContainerSelected={this.onContainerSelected} />}
                             </div>
                         </div>
+                        <FloatingMenu items={this.state.menu}/>
                     </div>
                 )
         );

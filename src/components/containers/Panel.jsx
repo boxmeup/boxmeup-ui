@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {
-    Button,
     Card,
     CardBlock,
     CardHeader,
     Progress
 } from 'reactstrap';
+
+import LocationFilter from './LocationFilter.jsx';
 
 export default class Panel extends Component {
     render() {
@@ -15,8 +16,7 @@ export default class Panel extends Component {
                     <Progress color="primary" value={this.props.total} max={this.props.max}>{this.props.total}/{this.props.max}</Progress>
                 </CardHeader>
                 <CardBlock>
-                    <Button color="success" block>Add Container</Button>
-                    {this.props.selectedContainers.size > 0 && <Button color="primary" block>Bulk Print</Button>}
+                    <LocationFilter />
                 </CardBlock>
             </Card>
         );

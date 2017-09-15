@@ -1,0 +1,85 @@
+ul.floating-menu {
+    position: fixed;
+    right: 20px;
+    /* padding-bottom: 10px; */
+    bottom: 0px;
+    z-index: 100;
+}
+
+ul.floating-menu li {
+    -webkit-animation: fadein 600ms;
+    -moz-animation: fadein 600ms;
+    animation: fadein 600ms;
+
+    list-style: none;
+    margin-bottom: 10px;
+}
+
+ul.floating-menu li a {
+    font-size: 24px;
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    margin: auto;
+    box-shadow: 2px 2px 3px #999;
+    width: 60px;
+    height: 60px;
+    display: block;
+}
+
+ul.floating-menu li a i {
+    margin-top: 18px;
+}
+
+ul.floating-menu li a.primary {
+    background-color: #0275d8;
+}
+
+ul.floating-menu li a.success {
+    background-color: #5cb85c;
+}
+
+ul.floating-menu li a.danger {
+    background-color: #d9534f;
+
+}
+
+ul.floating-menu li a:hover {
+    text-decoration: none;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@-ms-keyframes fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

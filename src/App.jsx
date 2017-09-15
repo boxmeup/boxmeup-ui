@@ -32,8 +32,7 @@ export default class App extends Component {
                             <Switch>
                                 <PrivateRoute exact path="/" auth={auth} component={(props) => <Redirect to={{ pathname: '/containers', push: false }} {...props} />} />
                                 <PrivateRoute exact path="/containers" auth={auth} component={(props) => <Containers auth={auth} history={browserHistory} {...props} />} />
-                                <PrivateRoute exact path="/containers/:id" auth={auth} component={(props) => <Container auth={auth} history={browserHistory} {...props} />} />
-                                <PrivateRoute exact path="/containers/view/:id" auth={auth} component={(props) => <Redirect to={{ pathname: '/containers/' + props.computedMatch.params.id, push: false}} {...props} /> }/>
+                                <PrivateRoute exact path="/containers/view/:id" auth={auth} component={(props) => <Container auth={auth} history={browserHistory} {...props} />} />
                                 <Route exact path="/login" component={(props) => <LoginPage auth={auth} {...props} />} />
                                 <Route exact path="/logout" component={(props) => <Logout auth={auth} {...props} />} />
                                 <Route component={NotFound} />
