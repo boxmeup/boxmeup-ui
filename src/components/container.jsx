@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
 
+import ContainerService from '../lib/containerservice.js';
+
 import AuthError from '../errors/AuthError.js';
 import { Redirect } from 'react-router-dom'
 
 const findContainerInStorage = function(id) {
     const lastContainerResponse = JSON.parse(localStorage.getItem('lastContainerResponse'));
-    const result = lastContainerResponse.containers.filter(container => container.id.toString() === id);
-    return result.length && result[0];
+    const result = lastContainerResponse && lastContainerResponse.containers.filter(container => container.id.toString() === id);
+    return result && result.length && result[0];
 }
 
 export default class Container extends Component {
     constructor(props) {
         super(props);
+        this.container = new ContainerService(props.auth.authorizedFetch.bind(props.auth));
         const containerID = props.computedMatch.params.id;
         // @todo If container is not in local storage call out to API to get it.
         // @todo Retrieve items of the container from API
@@ -26,7 +29,12 @@ export default class Container extends Component {
     async componentWillMount() {
         try {
             this.props.setAppState({ loading: true });
-            const response = await this.props.auth.authorizedFetch(`/api/container/${this.state.id}/item` + this.props.location.search);
+            if (!this.state.container) {
+                this.setState({
+                    container: await this.container.containerByID(this.state.id)
+                });
+            }
+            const response = await this.container.containerItemsByID(this.state.id, this.props.location.search);
             localStorage.setItem(`container${this.state.id}Items`, JSON.stringify(response));
             this.setState({
                 // The server should respond with empty array instead of null

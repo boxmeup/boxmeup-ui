@@ -3,6 +3,8 @@ import AuthError from '../errors/AuthError.js';
 import { Redirect } from 'react-router-dom'
 import { Alert } from 'reactstrap';
 
+import ContainerService from '../lib/containerservice.js';
+
 import Panel from './containers/Panel.jsx';
 import LocationFilter from './containers/LocationFilter.jsx';
 import ContainerList from './containers/ContainerList.jsx';
@@ -10,6 +12,7 @@ import ContainerList from './containers/ContainerList.jsx';
 export default class Containers extends Component {
     constructor(props) {
         super(props);
+        this.containers = new ContainerService(props.auth.authorizedFetch.bind(props.auth));
         this.onContainerSelected = this.onContainerSelected.bind(this);
         const lastResponse = JSON.parse(localStorage.getItem('lastContainerResponse'));
         this.state = {
@@ -25,7 +28,7 @@ export default class Containers extends Component {
     async componentWillMount() {
         try {
             this.props.setAppState({loading: true});
-            const response = await this.props.auth.authorizedFetch('/api/container' + this.props.location.search);
+            const response = await this.containers.containers(this.props.location.search);
             localStorage.setItem('lastContainerResponse', JSON.stringify(response));
             this.setState({
                 // The server should respond with empty array instead of null
