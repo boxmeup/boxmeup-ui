@@ -7,10 +7,6 @@ ul.floating-menu {
 }
 
 ul.floating-menu li {
-    -webkit-animation: fadein 600ms;
-    -moz-animation: fadein 600ms;
-    animation: fadein 600ms;
-
     list-style: none;
     margin-bottom: 10px;
 }
@@ -46,40 +42,4 @@ ul.floating-menu li a.danger {
 
 ul.floating-menu li a:hover {
     text-decoration: none;
-}
-
-@keyframes fadein {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@-moz-keyframes fadein {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@-webkit-keyframes fadein {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@-ms-keyframes fadein {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
 }
