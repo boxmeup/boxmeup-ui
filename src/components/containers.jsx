@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom'
 import { Alert } from 'reactstrap';
 
 import ContainerService from '../lib/containerservice.js';
+import LocationService from '../lib/locationservice.js';
 
 import Panel from './containers/Panel.jsx';
 import ContainerList from './containers/ContainerList.jsx';
@@ -13,8 +14,10 @@ export default class Containers extends Component {
     constructor(props) {
         super(props);
         this.containers = new ContainerService(props.auth.authorizedFetch.bind(props.auth));
+        this.locations = new LocationService(props.auth.authorizedFetch.bind(props.auth));
         this.onContainerSelected = this.onContainerSelected.bind(this);
         const lastResponse = JSON.parse(localStorage.getItem('lastContainerResponse'));
+        const locations = JSON.parse(localStorage.getItem('allLocations'));
         this.baseMenu = [{
             icon: "plus",
             link: "/containers/add",
@@ -23,6 +26,7 @@ export default class Containers extends Component {
         }];
         this.state = {
             containers: lastResponse ? lastResponse.containers || [] : [],
+            locations: locations || [],
             total: lastResponse ? lastResponse.meta.total : 0,
             error: null,
             errorType: null,
@@ -37,9 +41,12 @@ export default class Containers extends Component {
             this.props.setAppState({loading: true});
             const response = await this.containers.containers(this.props.location.search);
             localStorage.setItem('lastContainerResponse', JSON.stringify(response));
+            const locations = await this.locations.allLocations();
+            localStorage.setItem('allLocations', JSON.stringify(locations));
             this.setState({
                 // The server should respond with empty array instead of null
                 containers: response.containers || [],
+                locations: locations,
                 total: response.meta.total
             });
         } catch (e) {
@@ -98,8 +105,7 @@ export default class Containers extends Component {
                         }
                         <div className="row">
                             <div className="col-md-3 flex-md-last mb-2">
-                                <Panel total={this.state.total} max={50} selectedContainers={this.state.selectedContainers} />
-
+                                <Panel total={this.state.total} max={50} selectedContainers={this.state.selectedContainers} locations={this.state.locations} />
                             </div>
                             <div className="col">
                                 {this.state.isLoading && <span>loading...</span>}
