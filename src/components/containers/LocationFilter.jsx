@@ -28,7 +28,7 @@ export default class LocationFilter extends Component {
                 <div key={location.id} className="form-check">
                     <Label check>
                         <Input type="checkbox" defaultChecked />
-                        &nbsp;{location.name}
+                        &nbsp;{location.name} (<i>{location.container_count}</i>)
                     </Label>
                 </div>
             );
