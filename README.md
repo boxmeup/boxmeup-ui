@@ -7,6 +7,8 @@ mobile and offline (sortof) friendly that operates on the new Boxmeup Go server 
 
 ![Screenshot](docs/screenshot2.png)
 
+![Screenshot](docs/screenshot3.png)
+
 ## Setup
 
 ```bash
