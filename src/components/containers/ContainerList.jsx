@@ -25,11 +25,11 @@ export default class ContainerList extends Component {
         return (
             <Table responsive bordered={false}>
                 <thead>
-                    <tr>
+                    <tr className="hidden-sm-down">
                         <th></th>
                         <th className="text-center">Name</th>
-                        <th className="text-center hidden-sm-down">Items</th>
-                        <th className="text-center hidden-sm-down">Last Modified</th>
+                        <th className="text-center">Items</th>
+                        <th className="text-center">Last Modified</th>
                         <th></th>
                     </tr>
                 </thead>
