@@ -14,7 +14,7 @@ export default class LocationFilter extends Component {
         }
         this.toggleMore = this.toggleMore.bind(this);
         this.onSelected = this.onSelected.bind(this);
-        this.selectedLocations = new Set(props.locations.map(location => location.id));
+        this.selectedLocations = new Set();
         console.log(this.selectedLocations);
     }
 
@@ -40,7 +40,7 @@ export default class LocationFilter extends Component {
             return (
                 <div key={location.id} className="form-check">
                     <Label check>
-                        <Input type="checkbox" name={location.id} defaultChecked onChange={this.onSelected}/>
+                        <Input type="checkbox" name={location.id} onChange={this.onSelected}/>
                         &nbsp;{location.name} (<i>{location.container_count}</i>)
                     </Label>
                 </div>

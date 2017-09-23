@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import AuthError from '../errors/AuthError.js';
 import { Redirect } from 'react-router-dom'
 import { Alert } from 'reactstrap';
+import debounce from 'lodash.debounce';
 
 import ContainerService from '../lib/containerservice.js';
 import LocationService from '../lib/locationservice.js';
@@ -90,8 +91,26 @@ export default class Containers extends Component {
         });
     }
 
-    onLocationSelected(selectedLocations) {
-        console.log(selectedLocations);
+    async onLocationSelected(selectedLocations) {
+        try {
+            this.props.setAppState({ loading: true });
+            const locationURI = selectedLocations.length ?
+                '&location_id=' + selectedLocations.join('&location_id=') :
+                '';
+            const response = await this.containers.containers(this.props.location.search + (this.props.location.search.indexOf('?') > 0 ? '' : '?') + locationURI);
+            this.setState({
+                error: '',
+                containers: response.containers || [],
+            });
+        } catch (e) {
+            console.error(e);
+            this.setState({
+                error: 'There was a problem filtering your containers.',
+                errorType: e.constructor
+            });
+        } finally {
+            this.props.setAppState({ loading: false });
+        }
     }
 
     render() {
@@ -110,7 +129,7 @@ export default class Containers extends Component {
                         }
                         <div className="row">
                             <div className="col-md-3 flex-md-last mb-2">
-                                <Panel total={this.state.total} max={50} selectedContainers={this.state.selectedContainers} locations={this.state.locations} onLocationSelected={this.onLocationSelected} />
+                                <Panel total={this.state.total} max={50} selectedContainers={this.state.selectedContainers} locations={this.state.locations} onLocationSelected={debounce(this.onLocationSelected, 750)} />
                             </div>
                             <div className="col">
                                 {this.state.isLoading && <span>loading...</span>}
