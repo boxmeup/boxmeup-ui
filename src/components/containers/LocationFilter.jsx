@@ -13,6 +13,9 @@ export default class LocationFilter extends Component {
             isMore: false
         }
         this.toggleMore = this.toggleMore.bind(this);
+        this.onSelected = this.onSelected.bind(this);
+        this.selectedLocations = new Set(props.locations.map(location => location.id));
+        console.log(this.selectedLocations);
     }
 
     toggleMore(e) {
@@ -22,12 +25,22 @@ export default class LocationFilter extends Component {
         });
     }
 
+    onSelected(e) {
+        const id = parseInt(e.target.name, 10);
+        if (!this.selectedLocations.has(id)) {
+            this.selectedLocations.add(id);
+        } else {
+            this.selectedLocations.delete(id);
+        }
+        this.props.onLocationSelected(Array.from(this.selectedLocations));
+    }
+
     render() {
         const locations = (this.props.locations || []).map(location => {
             return (
                 <div key={location.id} className="form-check">
                     <Label check>
-                        <Input type="checkbox" defaultChecked />
+                        <Input type="checkbox" name={location.id} defaultChecked onChange={this.onSelected}/>
                         &nbsp;{location.name} (<i>{location.container_count}</i>)
                     </Label>
                 </div>

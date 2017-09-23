@@ -16,7 +16,7 @@ export default class Panel extends Component {
                     <Progress color="primary" value={this.props.total} max={this.props.max}>{this.props.total}/{this.props.max}</Progress>
                 </CardHeader>
                 <CardBlock>
-                    <LocationFilter locations={this.props.locations} />
+                    <LocationFilter locations={this.props.locations} onLocationSelected={this.props.onLocationSelected} />
                 </CardBlock>
             </Card>
         );

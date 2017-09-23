@@ -16,6 +16,7 @@ export default class Containers extends Component {
         this.containers = new ContainerService(props.auth.authorizedFetch.bind(props.auth));
         this.locations = new LocationService(props.auth.authorizedFetch.bind(props.auth));
         this.onContainerSelected = this.onContainerSelected.bind(this);
+        this.onLocationSelected = this.onLocationSelected.bind(this);
         const lastResponse = JSON.parse(localStorage.getItem('lastContainerResponse'));
         const locations = JSON.parse(localStorage.getItem('allLocations'));
         this.baseMenu = [{
@@ -89,6 +90,10 @@ export default class Containers extends Component {
         });
     }
 
+    onLocationSelected(selectedLocations) {
+        console.log(selectedLocations);
+    }
+
     render() {
         return (
             this.state.errorType === AuthError ? (
@@ -105,7 +110,7 @@ export default class Containers extends Component {
                         }
                         <div className="row">
                             <div className="col-md-3 flex-md-last mb-2">
-                                <Panel total={this.state.total} max={50} selectedContainers={this.state.selectedContainers} locations={this.state.locations} />
+                                <Panel total={this.state.total} max={50} selectedContainers={this.state.selectedContainers} locations={this.state.locations} onLocationSelected={this.onLocationSelected} />
                             </div>
                             <div className="col">
                                 {this.state.isLoading && <span>loading...</span>}
